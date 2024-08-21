@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Static-form-using-React-hooks.git/static/css/main.3d394a58.css",
+    "main.js": "/Static-form-using-React-hooks.git/static/js/main.22362ca0.js",
+    "index.html": "/Static-form-using-React-hooks.git/index.html",
+    "main.3d394a58.css.map": "/Static-form-using-React-hooks.git/static/css/main.3d394a58.css.map",
+    "main.22362ca0.js.map": "/Static-form-using-React-hooks.git/static/js/main.22362ca0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3d394a58.css",
+    "static/js/main.22362ca0.js"
+  ]
+}
