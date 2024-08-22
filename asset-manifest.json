@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Static-form-using-React-hooks.git/static/css/main.3d394a58.css",
-    "main.js": "/Static-form-using-React-hooks.git/static/js/main.22362ca0.js",
-    "index.html": "/Static-form-using-React-hooks.git/index.html",
-    "main.3d394a58.css.map": "/Static-form-using-React-hooks.git/static/css/main.3d394a58.css.map",
-    "main.22362ca0.js.map": "/Static-form-using-React-hooks.git/static/js/main.22362ca0.js.map"
+    "main.css": "/Shoping-cart-using-useReducer-Hooks-in-Reactjs.git/static/css/main.2c9861f6.css",
+    "main.js": "/Shoping-cart-using-useReducer-Hooks-in-Reactjs.git/static/js/main.c7c0d4d2.js",
+    "index.html": "/Shoping-cart-using-useReducer-Hooks-in-Reactjs.git/index.html",
+    "main.2c9861f6.css.map": "/Shoping-cart-using-useReducer-Hooks-in-Reactjs.git/static/css/main.2c9861f6.css.map",
+    "main.c7c0d4d2.js.map": "/Shoping-cart-using-useReducer-Hooks-in-Reactjs.git/static/js/main.c7c0d4d2.js.map"
   },
   "entrypoints": [
-    "static/css/main.3d394a58.css",
-    "static/js/main.22362ca0.js"
+    "static/css/main.2c9861f6.css",
+    "static/js/main.c7c0d4d2.js"
   ]
 }
