@@ -1,173 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+const initialState = {
+  cart: []
+};
 
-const App = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    dob: '',
-    email: '',
-    phoneNumber: '',
-    gender: '',
-    startTime: '',
-    endTime: '',
-    jobPosition: '',
-    teams: '',
-    designation: '',
-    billableHours: '',
-    isBillable: false,
-  });
+const cartReducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_ITEM':
+      const existingItemIndex = state.cart.findIndex(item => item.id === action.payload.id);
+      if (existingItemIndex >= 0) {
+        const updatedCart = state.cart.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+        return { ...state, cart: updatedCart };
+      } else {
+        return { ...state, cart: [...state.cart, { ...action.payload, quantity: 1 }] };
+      }
+    case 'REMOVE_ITEM':
+      return {
+        ...state,
+        cart: state.cart.filter(item => item.id !== action.payload.id)
+      };
+    case 'UPDATE_QUANTITY':
+      return {
+        ...state,
+        cart: state.cart.map(item =>
+          item.id === action.payload.id
+            ? { ...item, quantity: action.payload.quantity }
+            : item
+        )
+      };
+    default:
+      return state;
+  }
+};
 
-  const [errors, setErrors] = useState({});
+const ShoppingCart = () => {
+  const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  useEffect(() => {
-    console.log('Form data updated:', formData);
-  }, [formData]);
-
-  const handleChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [id]: type === 'checkbox' ? checked : value,
-    }));
+  const addItemToCart = (item) => {
+    dispatch({ type: 'ADD_ITEM', payload: item });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log('Form submitted successfully', formData);
-    }
+  const removeItemFromCart = (item) => {
+    dispatch({ type: 'REMOVE_ITEM', payload: item });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
+  const updateItemQuantity = (id, quantity) => {
+    dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
+  };
 
-    if (!formData.firstName) newErrors.firstName = 'First Name is required';
-    if (!formData.lastName) newErrors.lastName = 'Last Name is required';
-    if (!formData.dob) newErrors.dob = 'Date is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required';
-    if (!formData.gender) newErrors.gender = 'Gender is required';
-    if (!formData.startTime) newErrors.startTime = 'Start Time is required';
-    if (!formData.endTime) newErrors.endTime = 'End Time is required';
-    if (!formData.jobPosition) newErrors.jobPosition = 'Job Position is required';
-    if (!formData.teams) newErrors.teams = 'Required';
-    if (!formData.designation) newErrors.designation = 'Required';
-    if (!formData.billableHours || formData.billableHours <= 0) newErrors.billableHours = 'Billable Hours is required and must be a positive number';
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
+  const calculateTotalPrice = () => {
+    return state.cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
   return (
-    <div className="container">
-      <form className="employee-form" onSubmit={handleSubmit}>
-        <h2>Employee Form</h2>
-
-        <div className="form-group">
-          <label htmlFor="firstName">First Name</label>
-          <input type="text" id="firstName" value={formData.firstName} onChange={handleChange} placeholder="Enter your First Name" />
-          {errors.firstName && <span className="error">{errors.firstName}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="middleName">Middle Name</label>
-          <input type="text" id="middleName" value={formData.middleName} onChange={handleChange} placeholder="Enter your Middle Name" />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="lastName">Last Name</label>
-          <input type="text" id="lastName" value={formData.lastName} onChange={handleChange} placeholder="Enter your Last Name" />
-          {errors.lastName && <span className="error">{errors.lastName}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="dob">Birth Date</label>
-          <input type="date" id="dob" value={formData.dob} onChange={handleChange} />
-          {errors.dob && <span className="error">{errors.dob}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" />
-          {errors.email && <span className="error">{errors.email}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="phoneNumber">Phone Number</label>
-          <input type="tel" id="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Enter your phone number" />
-          {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="gender">Select Gender</label>
-          <select id="gender" value={formData.gender} onChange={handleChange}>
-            <option value="">Choose Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-          {errors.gender && <span className="error">{errors.gender}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="startTime">Start Time</label>
-          <input type="time" id="startTime" value={formData.startTime} onChange={handleChange} />
-          {errors.startTime && <span className="error">{errors.startTime}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="endTime">End Time</label>
-          <input type="time" id="endTime" value={formData.endTime} onChange={handleChange} />
-          {errors.endTime && <span className="error">{errors.endTime}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="jobPosition">Job Position</label>
-          <input type="text" id="jobPosition" value={formData.jobPosition} onChange={handleChange} placeholder="Enter the job position" />
-          {errors.jobPosition && <span className="error">{errors.jobPosition}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="teams">Select Teams</label>
-          <select id="teams" value={formData.teams} onChange={handleChange}>
-            <option value="">Select</option>
-            <option value="team1">Team 1</option>
-            <option value="team2">Team 2</option>
-            <option value="team3">Team 3</option>
-          </select>
-          {errors.teams && <span className="error">{errors.teams}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="designation">Select Designation</label>
-          <select id="designation" value={formData.designation} onChange={handleChange}>
-            <option value="">Select</option>
-            <option value="designation1">Designation 1</option>
-            <option value="designation2">Designation 2</option>
-            <option value="designation3">Designation 3</option>
-          </select>
-          {errors.designation && <span className="error">{errors.designation}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="billableHours">Billable Hours</label>
-          <input type="number" id="billableHours" value={formData.billableHours} onChange={handleChange} placeholder="Enter the billable hours" />
-          {errors.billableHours && <span className="error">{errors.billableHours}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="isBillable">Is Billable</label>
-          <span><input type="checkbox" id="isBillable" checked={formData.isBillable} onChange={handleChange} /></span>
-        </div>
-
-        <button type="submit">Submit</button>
-      </form>
+    <div className="shopping-cart">
+      <h2>Shopping Cart</h2>
+      <ul>
+        {state.cart.map(item => (
+          <li key={item.id} className="cart-item">
+            <img src={item.image} alt={item.name} className="cart-item-image" />
+            <div className="cart-item-details">
+              <span className="cart-item-name">{item.name}</span>
+              <span>Price: ${item.price}</span>
+              <span>Quantity: {item.quantity}</span>
+              <span>Total: ${(item.price * item.quantity).toFixed(2)}</span>
+            </div>
+            <div className="item-controls">
+              <button onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>+</button>
+              <button onClick={() => updateItemQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>-</button>
+              <button onClick={() => removeItemFromCart(item)}>Remove</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <h3 className="total-price">Total Price: ${calculateTotalPrice()}</h3>
+      <div className="add-items">
+        <h3>Add Items</h3>
+        <button onClick={() => addItemToCart({ id: 1, name: 'Apple', price: 1.5, image: 'https://cdn.pixabay.com/photo/2017/09/26/13/31/apple-2788616_1280.jpg' })}>
+          Add Apple ($1.50)
+        </button>
+        <button onClick={() => addItemToCart({ id: 2, name: 'Banana', price: 0.9, image: 'https://cdn.pixabay.com/photo/2018/09/24/20/12/bananas-3700718_1280.jpg' })}>
+          Add Banana ($0.90)
+        </button>
+        <button onClick={() => addItemToCart({ id: 3, name: 'Orange', price: 1.2, image: 'https://cdn.pixabay.com/photo/2019/11/19/13/10/fruit-4637398_1280.jpg' })}>
+          Add Orange ($1.20)
+        </button>
+      </div>
     </div>
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<ShoppingCart />, document.getElementById('root'));
+
